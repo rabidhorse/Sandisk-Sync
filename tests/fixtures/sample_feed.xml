@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
+  <channel>
+    <title>Sample Show</title>
+    <item>
+      <title>Older: How Lighthouses Work</title>
+      <guid isPermaLink="false">ep-1</guid>
+      <pubDate>Tue, 01 Sep 2026 12:00:00 +0000</pubDate>
+      <enclosure url="https://cdn.example.com/ep1.mp3" length="1000" type="audio/mpeg"/>
+    </item>
+    <item>
+      <title>Newest: What's up with "Daylight Saving"?</title>
+      <guid isPermaLink="false">ep-4</guid>
+      <pubDate>Wed, 28 Oct 2026 12:00:00 GMT</pubDate>
+      <enclosure url="https://cdn.example.com/audio/ep4.mp3?updated=1761650000" length="1000" type="audio/mpeg"/>
+    </item>
+    <item>
+      <title>Members-only notice with no audio</title>
+      <guid isPermaLink="false">no-audio</guid>
+      <pubDate>Thu, 29 Oct 2026 09:00:00 +0000</pubDate>
+    </item>
+    <item>
+      <title>Middle: Short Stuff</title>
+      <guid isPermaLink="false">ep-3</guid>
+      <pubDate>Sat, 24 Oct 2026 08:00:00 -0400</pubDate>
+      <enclosure url="https://cdn.example.com/stream/ep3" length="1000" type="audio/x-m4a"/>
+    </item>
+    <item>
+      <title>Second: The 404 Weekly</title>
+      <guid isPermaLink="false">ep-2</guid>
+      <pubDate>Tue, 20 Oct 2026 12:00:00 +0000</pubDate>
+      <enclosure url="https://cdn.example.com/ep2.mp3" length="1000" type="audio/mpeg"/>
+    </item>
+    <item>
+      <title>Way too old</title>
+      <guid isPermaLink="false">ep-0</guid>
+      <pubDate>Wed, 01 Jul 2026 12:00:00 +0000</pubDate>
+      <enclosure url="https://cdn.example.com/ep0.mp3" length="1000" type="audio/mpeg"/>
+    </item>
+  </channel>
+</rss>

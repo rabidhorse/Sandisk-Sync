@@ -1,0 +1,33 @@
+# Sandisk Sync settings.
+# Put Windows paths in single quotes so the backslashes are kept as-is.
+
+[player]
+# The player's name as File Explorer shows it. The program looks for a drive with this label.
+label = 'SPORT PLUS'
+# Set a drive letter here (for example 'E:') to skip the search by label.
+drive = ''
+
+[music]
+# Everything under this folder, including all subfolders, is mirrored to the player.
+source = 'Y:\Media\Music'
+# Folder on the player that holds the copy.
+folder = 'Music'
+# File types copied to the player. The Clip Sport Plus plays MP3, AAC/M4A, WMA, WAV and FLAC.
+extensions = ['.mp3', '.m4a', '.aac', '.wma', '.wav', '.flac']
+
+[podcasts]
+# Folder on the player that holds podcasts. Each show gets its own subfolder.
+folder = 'Podcasts'
+# Episodes this many days old or older are removed from the player (and never downloaded).
+max_age_days = 60
+# Each sync makes sure this many of each show's newest episodes are on the player.
+# Episodes you've already had (even ones you deleted) aren't downloaded again.
+episodes_per_show = 5
+
+[[podcasts.shows]]
+name = 'Stuff You Should Know'
+feed = 'https://www.omnycontent.com/d/playlist/e73c998e-6e60-432f-8610-ae210140c5b1/a91018a4-ea4f-4130-bf55-ae270180c327/44710ecc-10bb-48d1-93c7-ae270180c33e/podcast.rss'
+
+[[podcasts.shows]]
+name = 'The 404 Media Podcast'
+feed = 'https://feeds.megaphone.fm/TBIEA2761282490'
