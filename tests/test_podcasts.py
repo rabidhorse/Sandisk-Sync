@@ -8,6 +8,7 @@ from pathlib import Path
 from sandisk_sync.common import Report, State, sanitize_filename
 from sandisk_sync.config import Config, Show
 from sandisk_sync.podcasts import file_date, parse_feed, sync_podcasts
+from sandisk_sync.tags import read_album
 
 FEED_URL = "https://feeds.example.com/show.rss"
 FEED = (Path(__file__).parent / "fixtures" / "sample_feed.xml").read_bytes()
@@ -132,7 +133,7 @@ class SyncPodcastsTests(unittest.TestCase):
 
         report = self.run_sync()
 
-        self.assertEqual(report.counts, {"download": 1})
+        self.assertEqual(report.counts, {"download": 1, "set show name": 1})
 
     def test_never_downloads_episodes_past_the_age_limit(self):
         self.run_sync(episodes_per_show=10)
@@ -165,6 +166,28 @@ class SyncPodcastsTests(unittest.TestCase):
 
         self.assertEqual(len(report.errors), 1)
         self.assertEqual(report.counts, {"download": 2})
+
+    def test_episodes_get_the_show_name_as_their_album(self):
+        self.run_sync()
+
+        mp3 = self.show_dir / "2026-10-28 Newest What's up with Daylight Saving.mp3"
+        self.assertEqual(read_album(mp3), "Sample Show")
+        self.assertTrue(mp3.read_bytes().startswith(b"ID3"))
+        self.assertIn(b"audio for https://cdn.example.com/", mp3.read_bytes())
+
+    def test_episodes_already_on_the_player_get_the_show_name_once(self):
+        existing = self.show_dir / "2026-10-01 Older.mp3"
+        existing.write_bytes(b"audio")
+
+        preview = self.run_sync(dry_run=True)
+        self.assertEqual(existing.read_bytes(), b"audio", "preview changes nothing")
+        self.assertEqual(preview.counts["set show name"], 1)
+
+        self.run_sync()
+        self.assertEqual(read_album(existing), "Sample Show")
+
+        again = self.run_sync()
+        self.assertNotIn("set show name", again.counts)
 
     def test_failed_download_leaves_no_partial_file(self):
         def fetch(url):

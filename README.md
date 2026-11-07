@@ -38,6 +38,8 @@ Everything is in [`config.toml`](config.toml): the music folder, which shows to 
 
 **Podcasts.** Each show gets its own folder inside `Podcasts`, and every episode's file name starts with its release date, for example `2026-10-28 How Lighthouses Work.mp3`. That date is how the program tells an episode's age on later syncs (files without a date in the name use the file's modified date). Every audio file in `Podcasts` that is `max_age_days` old or older is removed. The program remembers which episodes it has downloaded, so an episode you delete from the player yourself won't come back.
 
+The player's Podcasts menu lists shows by the album name stored inside each MP3, not by folder. Some feeds leave that blank, which shows up on the player as "Unknown Album", so the program sets every MP3 episode's album to the show's `name` from `config.toml`. Episodes already on the player are fixed on the next sync too.
+
 **Music.** Files are matched by their path under `Y:\Media\Music`. A song is copied when it's missing from the player or has changed on the PC since it was last copied. Songs already on the player before you started using this program are kept as long as the file size matches. If `Y:\Media\Music` can't be reached or is empty, music is skipped completely so a disconnected drive can never wipe the player. When the player runs out of space, copying stops and the summary says how much didn't fit.
 
 The program's memory of what it has synced is kept on the PC in `%LOCALAPPDATA%\SandiskSync\state.json`, so nothing extra is written to the player. Deleting that file is safe; the next sync just rebuilds it.
