@@ -17,6 +17,7 @@ from urllib.parse import urlparse
 
 from .common import Report, State, free_bytes, format_size, remove_empty_dirs, sanitize_filename
 from .config import Config
+from .tags import TagError, read_album, set_album
 
 USER_AGENT = "SandiskSync/1.0 (+https://github.com/rabidhorse/Sandisk-Sync)"
 PODCAST_EXTENSIONS = {".mp3", ".m4a", ".aac", ".wma", ".wav", ".flac"}
@@ -125,6 +126,7 @@ def sync_podcasts(
             continue
 
         show_dir = podcast_dir / sanitize_filename(show.name)
+        _fix_album_tags(show_dir, show.name, cutoff, report)
         on_player = {p.name.casefold() for p in show_dir.iterdir()} if show_dir.is_dir() else set()
         newest = [e for e in episodes if e.day > cutoff][: config.episodes_per_show]
 
@@ -152,6 +154,36 @@ def sync_podcasts(
                 continue
             history[episode.guid] = episode.day.isoformat()
             state.save()
+            _tag_episode(show_dir / episode.filename(), show.name, report)
+
+
+def _tag_episode(path: Path, show_name: str, report: Report) -> None:
+    """Put the show's name in the episode's album tag; the player's Podcasts menu groups by it."""
+    if path.suffix.lower() != ".mp3":
+        return
+    try:
+        if read_album(path) != show_name:
+            set_album(path, show_name)
+    except (OSError, TagError) as exc:
+        report.error(f"couldn't set the show name in '{path.name}': {exc}")
+
+
+def _fix_album_tags(show_dir: Path, show_name: str, cutoff: date, report: Report) -> None:
+    """Fix episodes already on the player whose album tag doesn't match the show's name."""
+    if not show_dir.is_dir():
+        return
+    for path in sorted(show_dir.iterdir()):
+        if not path.is_file() or path.suffix.lower() != ".mp3" or file_date(path) <= cutoff:
+            continue  # (old episodes are being removed, so there's no point fixing them)
+        try:
+            if read_album(path) == show_name:
+                continue
+        except (OSError, TagError) as exc:
+            report.error(f"couldn't read the tags of '{path.name}': {exc}")
+            continue
+        report.action("set show name", f"{show_name} / {path.name}")
+        if not report.dry_run:
+            _tag_episode(path, show_name, report)
 
 
 def _remove_old_episodes(podcast_dir: Path, cutoff: date, today: date, report: Report) -> None:
